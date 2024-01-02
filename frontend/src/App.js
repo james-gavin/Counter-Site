@@ -5,8 +5,6 @@ import { useEffect, useState } from 'react';
 
 const socket = io.connect("http://localhost:3001")
 
-
-
 function App() {
   const [counter, setCounter] = useState(0);
   const [users, setUsers] = useState(0);
