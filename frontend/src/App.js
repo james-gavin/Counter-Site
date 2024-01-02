@@ -9,6 +9,7 @@ const socket = io.connect("http://localhost:3001")
 
 function App() {
   const [counter, setCounter] = useState(0);
+  const [users, setUsers] = useState(0);
 
   const addOne = () => {
     setCounter(counter + 1); 
@@ -21,13 +22,24 @@ function App() {
   };
 
   useEffect(() => {
-    socket.on("update", (count) => {
-      console.log(typeof(count))
-      if (count !== undefined) {
-        setCounter(count);
+    socket.on("update", (data) => {
+      console.log(data)
+      if (data && data[1] && data[0] !== undefined) {
+        setCounter(data[1]);
+        setUsers(data[0]);
       } else {
-        console.error('Received invalid count object:', count);
+        console.error('Received invalid count object:', data);
       }
+      
+    });
+
+    socket.on('upUsers', (data) => {
+      if (data && data[0] !== undefined) {
+        setUsers(data[0]);
+      } else {
+        console.error('Received invalid count object:', data);
+      }
+      
     });
   }, [socket]);
 
@@ -36,6 +48,7 @@ function App() {
       <button onClick={subOne}> - </button>
       <h1> {counter} </h1>
       <button onClick={addOne}> + </button>
+      <h2>{users}</h2>
     </div>
   );
 }

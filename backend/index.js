@@ -14,15 +14,30 @@ const io = new Server(server, {
     },
 });
 
+const data = [0,0]
+
 io.on("connection" , (socket) => {
+    data[0] += 1
+
+    socket.broadcast.emit('upUsers', data)
+
     console.log(`User Connected: ${socket.id}`)
+    socket.emit('update', data)
+    
 
     socket.on("add", (count) => {
-        socket.broadcast.emit('update', count)
+        data[1] = count
+        socket.broadcast.emit('update', data)
     })
 
     socket.on("sub", (count) => {
-        socket.broadcast.emit('update', count)
+        data[1] = count
+        socket.broadcast.emit('update', data)
+    })
+
+    socket.on("disconnect", ()=>{
+        data[0] -= 1
+        socket.broadcast.emit('upUsers', data)
     })
 })
 
